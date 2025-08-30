@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #121212;
+  --surface-hover: #1a1a1a;
+  --border: #333333;
+  --border-light: #404040;
+  --muted: #a1a1aa;
+  --accent: #ffffff;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-light);
+}
+
+/* Selection */
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}

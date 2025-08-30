@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "src/app/api/*/route.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "SPOTIFY_CLIENT_ID": "@spotify_client_id",
+    "SPOTIFY_CLIENT_SECRET": "@spotify_client_secret", 
+    "OPENROUTER_API": "@openrouter_api"
+  }
+}
