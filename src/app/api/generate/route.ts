@@ -4,7 +4,7 @@ import { SpotifyFetcher } from "@/lib/spotifyAPI";
 
 export async function POST(request: NextRequest) {
     try {
-        const { prompt } = await request.json();
+        const { prompt, savePlaylist = false } = await request.json();
         if (!prompt) {
             return NextResponse.json(
                 { error: "Prompt is required" },
@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
                 { status: 401 },
             );
         }
+        
         const fetcher = new SpotifyFetcher(accessToken);
         const userProfile = await fetcher.getUserMusicProfile();
         const llmPrompt = fetcher.generatePrompt(userProfile, prompt);
@@ -47,14 +48,27 @@ export async function POST(request: NextRequest) {
         const recommendations = llmData.choices[0].message.content;
         const parsedRecommendations = JSON.parse(recommendations);
         const tracks = await fetcher.getTracksFromRecommendations(parsedRecommendations);
-        const playlist = await fetcher.createPlaylist(tracks);
-        return NextResponse.json({
+        
+        const response: {
+            success: boolean;
+            prompt: string;
+            recommendations: unknown;
+            tracks: unknown[];
+            playlist?: unknown;
+        } = {
             success: true,
             prompt: llmPrompt,
             recommendations: parsedRecommendations,
             tracks,
-            playlist,
-        });
+        };
+
+        // Only create playlist if savePlaylist is true
+        if (savePlaylist) {
+            const playlist = await fetcher.createPlaylist(tracks);
+            response.playlist = playlist;
+        }
+
+        return NextResponse.json(response);
     } catch (error) {
         console.error("Error generating prompt:", error);
         return NextResponse.json(

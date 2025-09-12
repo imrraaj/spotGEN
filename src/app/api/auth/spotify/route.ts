@@ -73,7 +73,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(spotifyAuthUrl);
 }
 
-
 export async function DELETE() {
     const store = await cookies();
     store.delete("spotify_access_token");

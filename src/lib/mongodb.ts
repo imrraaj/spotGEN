@@ -8,7 +8,7 @@ let db: Db;
 
 export async function connectToDatabase() {
     if (!client) {
-        client = new MongoClient(uri);
+        client = new MongoClient(uri, {});
         await client.connect();
     }
 

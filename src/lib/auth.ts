@@ -7,15 +7,11 @@ export interface SpotifyUser {
 }
 
 export async function getSpotifyUser(): Promise<SpotifyUser | null> {
-
     const accessToken = await getAccessToken();
     if (!accessToken) return null;
-
     const cookieStore = await cookies();
     const userCookie = cookieStore.get("spotify_user");
-    if (!userCookie) {
-        return null;
-    }
+    if (!userCookie) return null;
     try {
         return JSON.parse(userCookie.value);
     } catch (error) {
@@ -28,20 +24,16 @@ export async function getAccessToken(): Promise<string | null> {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("spotify_access_token");
     const tokenExpiresAt = cookieStore.get("spotify_token_expires_at");
-    
+
     if (!accessToken) return null;
-    
-    // Check if token is expired
     if (tokenExpiresAt) {
         const expiresAt = parseInt(tokenExpiresAt.value);
         if (Date.now() >= expiresAt) {
-            // Token is expired, clear it
             cookieStore.delete("spotify_access_token");
             cookieStore.delete("spotify_token_expires_at");
             return null;
         }
     }
-    
     return accessToken.value;
 }
 

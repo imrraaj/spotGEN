@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { ChatService, ChatMessage } from "../../../lib/chatService";
+import { ChatService } from "../../../lib/chatService";
 
 async function getUserId(): Promise<string> {
     const cookieStore = await cookies();
@@ -16,7 +16,7 @@ async function getUserId(): Promise<string> {
 
 export async function POST(request: NextRequest) {
     try {
-        const { chatHistory } = await request.json();
+        const { chatHistory, topicId } = await request.json();
 
         if (!Array.isArray(chatHistory)) {
             return NextResponse.json(
@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
 
         const userId = await getUserId();
 
-        await ChatService.saveUserChat(userId, chatHistory);
+        if (topicId) {
+            await ChatService.saveTopicMessages(topicId, chatHistory);
+        } else {
+            await ChatService.saveUserChat(userId, chatHistory);
+        }
 
         return NextResponse.json({ success: true });
     } catch (error) {
